@@ -1,0 +1,5 @@
+cshrc    : ~/.cshrc
+vimrc    : ~/.vimrc
+vim      : ~/.vim
+script   : ~/script
+cmd      : used to replace env file
