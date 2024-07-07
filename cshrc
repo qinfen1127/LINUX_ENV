@@ -54,9 +54,17 @@ alias     lh        "ls -lh"
 alias     dx        "du -sh"
 alias     dxa       "du -sh *"
 alias     wo        "whoami"
-alias     rt        "su root"
 alias     gch       "gvim /etc/csh.cshrc"
 alias     sch       "source /etc/csh.cshrc"
+
+#----------------------------------------------------------------------------------------------------------------------
+#  su user
+#----------------------------------------------------------------------------------------------------------------------
+alias     rt        "su root"
+if (! $?my_name) then
+  setenv    my_name `whoami`       
+endif
+alias     sm        'su $my_name'
 
 #----------------------------------------------------------------------------------------------------------------------
 #  git command

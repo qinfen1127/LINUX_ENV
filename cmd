@@ -6,4 +6,4 @@ cp  cshrc         ~/.cshrc
 cp  vimrc         ~/.vimrc
 cp  vim           ~/.vim  -rf
 mkdir -p          ~/script
-cp  script/*      ~/script/
+cp  script/*      ~/script/ -rf
