@@ -69,6 +69,7 @@ alias     gcm       "git commit -m"
 alias     gps       "git push origin main"
 alias     gbh       "git branch"
 alias     gpl       "git pull"
+alias     gcl       "git clone"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  lsf command set
