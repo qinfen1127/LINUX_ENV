@@ -1,0 +1,203 @@
+#!/bin/csh -f
+#-------------------------------------------------------------------------------------------
+#  author   : Howard
+#  data     : 2020/3/1
+#  function : package a file and its all subdirectory
+#-------------------------------------------------------------------------------------------
+
+if(($1  ==  "help")|($1  ==  ""))then
+    echo  "------------------------------------------------------------------- "
+    echo  "        command                              function              |"
+    echo  "./compress    pack test        -->    compress test to test.cps    |"
+    echo  "./compress    unpack test.cps  -->    unpack test.cps to test_copy |"
+    echo  "------------------------------------------------------------------- "
+    exit 1
+endif
+
+#-------------------------------------------------------------------------------------------
+#  select pack or unpack function
+#-------------------------------------------------------------------------------------------
+if($1 == "pack") then
+	goto label_pack
+else if($1 == "unpack") then
+	goto label_unpack
+else
+	echo "parameter is not correct"
+	exit 1
+endif
+
+#-------------------------------------------------------------------------------------------
+#  define pack function label
+#-------------------------------------------------------------------------------------------
+label_pack:
+
+#-------------------------------------------------------------------------------------------
+#  set file list and file text
+#  FILE_LIST contain all file list    , used to generate file name
+#  FILE_FRAM contain all file frame   , used to mkdir file
+#  FILE_PACK contain all above        , used to restore file
+#-------------------------------------------------------------------------------------------
+set  FILE_LIST = $2.list
+set  FILE_FRAM = $2.fram
+set  FILE_PACK = $2.cps
+
+#-------------------------------------------------------------------------------------------
+#  set frame variable
+#  FOR is the floor that indicate frame
+#-------------------------------------------------------------------------------------------
+set  FOR = 0
+set  FILE_$FOR  = $2/
+set  TEMP = `eval echo \$FILE_$FOR`
+
+#-------------------------------------------------------------------------------------------
+#  delete old file and create new file
+#-------------------------------------------------------------------------------------------
+rm -rf $FILE_LIST $FILE_FRAM $FILE_PACK
+touch  $FILE_LIST $FILE_FRAM $FILE_PACK
+
+#-------------------------------------------------------------------------------------------
+#  define the next pack label until all file packed
+#-------------------------------------------------------------------------------------------
+label_pack_next:
+
+#-------------------------------------------------------------------------------------------
+#  $FOR self plus 1 and empty path list
+#-------------------------------------------------------------------------------------------
+echo  "$FOR floor start pack"
+set   FOR = `expr $FOR + 1`
+set   FILE_$FOR = ""
+
+#-------------------------------------------------------------------------------------------
+#  find every path inside $TEMP
+#-------------------------------------------------------------------------------------------
+foreach VAR ($TEMP)
+    if(! -d $VAR)  then
+    	echo "$VAR does't exit"
+    else if("`ls $VAR`" == "") then
+    	echo "$VAR is an empty path"
+    else
+    	ls -l $VAR*|grep "^-"|grep "$VAR"|awk '{print($9)}' >> $FILE_LIST
+        ls -d $VAR*/ >> $FILE_FRAM
+    endif
+	set  FILE_VAR  = "`ls -d $VAR*/`"
+	set  TEMP_SAVE = `eval echo \$FILE_$FOR`
+	set  FILE_$FOR = ($TEMP_SAVE $FILE_VAR)
+end
+
+#-------------------------------------------------------------------------------------------
+#  update the next TEMP value
+#-------------------------------------------------------------------------------------------
+set  TEMP = `eval echo \$FILE_$FOR` ;
+
+#-------------------------------------------------------------------------------------------
+#  judge wheather operate next pack
+#-------------------------------------------------------------------------------------------
+if($#TEMP != 0) then
+	goto label_pack_next
+else
+	echo "$2 has been searched completely!"
+endif
+
+#-------------------------------------------------------------------------------------------
+#  define the file that not need packed
+#-------------------------------------------------------------------------------------------
+set PACK_DIS = "png pdf tar db"
+echo "discard $PACK_DIS file"
+
+#-------------------------------------------------------------------------------------------
+#  combine file.list file.fram file.text to file.cps
+#-------------------------------------------------------------------------------------------
+echo "pack frame start" >> $FILE_PACK
+cat $FILE_FRAM >> $FILE_PACK
+
+echo "pack text start" >> $FILE_PACK
+foreach LINE (`awk '{print}' $FILE_LIST`)
+	set DIS_ENA = 1
+	set TEMP = $LINE
+	foreach VAR ($PACK_DIS)
+		if($TEMP =~ "*.$VAR") then
+			echo "$TEMP contain .$VAR file"
+			set  DIS_ENA = 0
+			break
+		else
+			continue
+		endif
+	end
+	if($DIS_ENA == 1) then
+		echo "$TEMP" >> $FILE_PACK
+		echo "pack_start" >> $FILE_PACK
+		cat $TEMP >> $FILE_PACK
+		echo "pack_end" >> $FILE_PACK
+	endif
+end
+
+#-------------------------------------------------------------------------------------------
+#  delete file.list file.fram
+#-------------------------------------------------------------------------------------------
+rm -rf $FILE_FRAM
+rm -rf $FILE_LIST
+
+echo "$2 has been packed to $2.cps sucessfully"
+
+exit 1
+
+#-------------------------------------------------------------------------------------------
+#  define unpack label
+#-------------------------------------------------------------------------------------------
+label_unpack:
+
+#-------------------------------------------------------------------------------------------
+#  cut the file name and judge weather TOP_FILE exist
+#-------------------------------------------------------------------------------------------
+set FILE = `echo $2 | awk '{print substr($0,1,length($0)-4)}'`
+
+if(-e $FILE) then
+	set TOP_FILE = `echo $FILE`_copy
+	rm -rf $TOP_FILE
+	echo  "$FILE already exists,now create $TOP_FILE"
+	mkdir $TOP_FILE;cd $TOP_FILE;mkdir $FILE;cp ../$2 .;
+else
+	set  TOP_FILE = $FILE
+	mkdir $TOP_FILE
+endif
+
+#-------------------------------------------------------------------------------------------
+#  operate unpack 
+#-------------------------------------------------------------------------------------------
+set  STATE = 0
+set  TEXT  = ""
+set  n     = `wc -l < $2`
+set  i     = 1
+
+while ($i <= $n)
+	set LINE = "`awk '{if (NR==$i) print}' $2`"
+	@ i ++
+	if($STATE != 0) then
+		if($STATE == 1) then
+			if("$LINE" == "pack text start") then
+				set STATE = 2
+			else
+				mkdir $LINE
+			endif
+		else if($STATE == 2) then
+			if("$LINE" == "pack_start") then
+				set STATE = 3
+			else
+				set TEXT  = $LINE
+			endif
+		else if("$LINE" == "pack_end") then
+			set STATE = 2
+		else
+			echo "$LINE" >> $TEXT
+		endif
+	else if("$LINE" == "pack frame start") then
+		set STATE = 1
+	endif
+end
+
+#-------------------------------------------------------------------------------------------
+#  unpack completely
+#-------------------------------------------------------------------------------------------
+echo "Unpack $FILE completely! $2 restore to file $TOP_FILE"
+
+

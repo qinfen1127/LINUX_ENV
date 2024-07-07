@@ -68,6 +68,7 @@ alias     gmv       "git mv"
 alias     gcm       "git commit -m"
 alias     gps       "git push origin main"
 alias     gbh       "git branch"
+alias     gpl       "git pull"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  lsf command set
@@ -85,6 +86,10 @@ setenv    VCS_HOME   /cad/synoposys/vcs/R-2020.12-SP2-9
 #  local script set
 #----------------------------------------------------------------------------------------------------------------------
 alias     plist     "python3 ~/script/plist.py"
+alias     pfile     "python3 ~/script/file_line.py"
+alias     pflist    "python3 ~/script/flist_line.py"
+alias     port      "python3 ~/script/port_shell.py"
+alias     cps       "~/script/./compress"
 alias     pskill    "ps -eLf | grep haoran | grep simv | awk '{print $2}' | xargs -r kill -9"
 
 #----------------------------------------------------------------------------------------------------------------------
