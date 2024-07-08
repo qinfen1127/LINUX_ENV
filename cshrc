@@ -71,7 +71,7 @@ alias     sm        "su $my_name"
 #----------------------------------------------------------------------------------------------------------------------
 alias     gad       "git add"
 alias     gst       "git status"
-alias     grm       "git rm"
+alias     grm       "git rm -r"
 alias     gmv       "git mv"
 alias     gcm       "git commit -m"
 alias     gps       "git push origin main"
