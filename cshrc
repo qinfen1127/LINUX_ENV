@@ -54,6 +54,16 @@ alias     wo        "whoami"
 alias     gch       "gvim /etc/csh.cshrc"
 alias     sch       "source /etc/csh.cshrc"
 alias     fh        "cd -"
+alias     c         "clear"
+alias     h         "history"
+
+#----------------------------------------------------------------------------------------------------------------------
+#  set prompt
+#----------------------------------------------------------------------------------------------------------------------
+#alias     setprompt 'set prompt="%B%T[${cwd}/]>"'
+#alias     setprompt 'set prompt="%B[${cwd}/]\"$'
+alias     setprompt 'set prompt="%B[${cwd}/]\>"'
+alias     cd        'chdir \!* && setprompt;ls'
 
 #----------------------------------------------------------------------------------------------------------------------
 #  su user
@@ -114,6 +124,12 @@ alias     port      "python3 ~/script/port_shell.py"
 alias     cps       "~/script/./compress"
 alias     pskill    "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"
 alias     psm       "ps -eLf | grep $my_name"
+
+#----------------------------------------------------------------------------------------------------------------------
+#  set unalias
+#----------------------------------------------------------------------------------------------------------------------
+#unalias   vim
+#unalias   verdi
 
 #----------------------------------------------------------------------------------------------------------------------
 #  source complete
