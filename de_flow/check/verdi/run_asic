@@ -1,0 +1,27 @@
+#!/bin/csh -f
+
+set TOP_FILE = "cmsdk_mcu"
+
+# Launch verdi.
+if ($#argv == 0) then
+	verdi -nologo -top $TOP_FILE -f ../../design/filelist/dc_flist.f &
+	exit
+endif
+
+# Clean verdi files.
+if ($argv[1] == "clean") then
+	if ( -f ./novas.rc) then
+		rm -rf ./novas.rc
+	endif
+	if ( -f ./novas.conf) then
+		rm -rf ./novas.conf
+	endif
+	if ( -d ./verdiLog) then
+		rm -rf ./verdiLog
+	endif
+	if ( -d ./novas_libs) then
+		rm -rf ./novas_libs
+	endif
+	exit
+endif
+

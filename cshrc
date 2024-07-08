@@ -56,6 +56,7 @@ alias     dxa       "du -sh *"
 alias     wo        "whoami"
 alias     gch       "gvim /etc/csh.cshrc"
 alias     sch       "source /etc/csh.cshrc"
+alias     fh        "cd -"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  su user

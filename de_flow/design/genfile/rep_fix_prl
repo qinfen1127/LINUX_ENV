@@ -1,0 +1,29 @@
+#! /usr/bin/perl
+
+my $in     = @ARGV[0]  ;
+my $author = @ARGV[1]  ;
+my $auth_u = @ARGV[2]  ;
+my $name   = @ARGV[3]  ;
+my $name_u = @ARGV[4]  ;
+my $date   = @ARGV[5]  ;
+my $date_u = @ARGV[6]  ;
+my $out    = $in       ;
+
+$out  =~ s/\A/md_/ ;
+
+open $in_fh,  '<', $in  ;
+open $out_fh, '>', $out ;
+
+while (<$in_fh>) {
+    s/$author/$auth_u/g  ;
+	s/$name/$name_u/g    ;
+	s/$date/$date_u/g    ;
+    print $out_fh $_ ;
+}
+
+close $in_fh    ;
+close $out_fh   ;
+
+unlink $in     ;
+rename $out,$in;
+

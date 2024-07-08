@@ -1,0 +1,134 @@
+#!/bin/csh -f
+#---------------------------------------------------------
+#author   : Howard
+#data     : 2020/3/1
+#function : generate file list
+#---------------------------------------------------------
+
+#---------------------------------------------------------
+# filelist name
+#---------------------------------------------------------
+cd  ..
+set RUN_PATH     = `pwd`
+cd  filelist
+set DC_FLIST     = "$RUN_PATH/filelist/dc_flist.f"
+set SIM_FLIST    = "$RUN_PATH/filelist/sim_flist.f"
+set FPGA_FLIST   = "$RUN_PATH/filelist/fpga_flist.f"
+set FT_FLIST     = "$RUN_PATH/filelist/ft_flist.f"
+
+set INC_PATH     = "$RUN_PATH/include"
+set RTL_PATH     = "$RUN_PATH/verilog"
+set DEFINE_PATH  = "$RUN_PATH/define"
+set XILINX_PATH  = "$RUN_PATH/xilinx/xcku115"
+
+#---------------------------------------------------------
+# delete old and create new
+#---------------------------------------------------------
+rm -rf $DC_FLIST $SIM_FLIST $FPGA_FLIST $FT_FLIST
+touch  $DC_FLIST $SIM_FLIST $FPGA_FLIST $FT_FLIST
+
+#---------------------------------------------------------
+# write include path
+#---------------------------------------------------------
+if("`ls $INC_PATH`" == "") then
+	echo "no include file inside design"
+else
+	printf {"+incdir+$INC_PATH\n"} >> $DC_FLIST
+	printf {"+incdir+$INC_PATH\n"} >> $SIM_FLIST
+	printf {"+incdir+$INC_PATH\n"} >> $FPGA_FLIST
+	printf {"+incdir+$INC_PATH\n"} >> $FT_FLIST
+endif
+
+#---------------------------------------------------------
+# write define path
+#---------------------------------------------------------
+set TYPE = `ls $DEFINE_PATH`
+
+foreach VAR ($TYPE)
+	set TEMP = $DEFINE_PATH/$VAR
+    if("`ls $TEMP`" == "")  then
+    	echo "no define file inside $TEMP"
+    else if($VAR == "common") then
+    	ls -l $TEMP/*|awk '{print($9)}' >> $DC_FLIST
+    	ls -l $TEMP/*|awk '{print($9)}' >> $FPGA_FLIST
+    	ls -l $TEMP/*|awk '{print($9)}' >> $FT_FLIST
+    	ls -l $TEMP/*|awk '{print($9)}' >> $SIM_FLIST
+    else if($VAR == "dc") then
+    	ls -l $TEMP/*|awk '{print($9)}' >> $DC_FLIST
+	else if($VAR == "fpga") then
+		ls -l $TEMP/*|awk '{print($9)}' >> $FPGA_FLIST
+		ls -l $TEMP/*|awk '{print($9)}' >> $FT_FLIST
+	else if($VAR == "sim") then
+		ls -l $TEMP/*|awk '{print($9)}' >> $SIM_FLIST
+    endif
+end
+
+#---------------------------------------------------------
+# write xilinx file to fpga flist
+#---------------------------------------------------------
+ls -l $XILINX_PATH/*.v |awk '{print($9)}' >> $FPGA_FLIST
+ls -l $XILINX_PATH/*.v |awk '{print($9)}' >> $FT_FLIST
+
+#---------------------------------------------------------
+# write xilinx vcs sim file to ft_flist.f
+#---------------------------------------------------------
+echo	"/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv" >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/IBUFDS.v"        >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/glbl.v"                  >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/BUFG.v"          >> $FT_FLIST
+#echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/MMCME3_BASE.v"   >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/MMCME3_ADV.v"    >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/IOBUF.v"         >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/LDCE.v"          >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/LDPE.v"          >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/PULLDOWN.v"      >> $FT_FLIST
+echo    "/shome/software/Xilin/vivado2018.2/Vivado/2018.2/data/verilog/src/unisims/PULLUP.v"        >> $FT_FLIST
+
+#---------------------------------------------------------
+# write verilog path
+#---------------------------------------------------------
+cat cmn_flist.f >> $DC_FLIST
+cat cmn_flist.f >> $SIM_FLIST
+cat cmn_flist.f >> $FPGA_FLIST
+cat cmn_flist.f >> $FT_FLIST
+
+#---------------------------------------------------------
+# write verilog path
+#---------------------------------------------------------
+set TYPE = `ls $RTL_PATH`
+
+foreach VAR ($TYPE)
+	set TEMP = $RTL_PATH/$VAR
+	if("`ls $TEMP`" == "") then
+		echo "no verilog file inside $TEMP"
+	else
+		set EMPTY = "no"
+		ls -l $TEMP/*.v|awk '{print($9)}' >> $DC_FLIST
+		ls -l $TEMP/*.v|awk '{print($9)}' >> $SIM_FLIST
+		ls -l $TEMP/*.v|awk '{print($9)}' >> $FPGA_FLIST
+		ls -l $TEMP/*.v|awk '{print($9)}' >> $FT_FLIST
+	endif
+end
+
+if($?EMPTY) then
+	echo "fpga_flist.f has generated successfully"
+	echo "dc_flist.f   has generated successfully"
+	echo "sim_flist.f  has generated successfully"
+	echo "ft_flist.f   has generated successfully"
+else
+	echo "fpga_flist.f has generated failed"
+	echo "dc_flist.f   has generated failed"
+	echo "sim_flist.f  has generated failed"
+	echo "ft_flist.f   has generated failed"
+endif
+
+#---------------------------------------------------------
+# write testbench path
+#---------------------------------------------------------
+#if("`ls ../testbench`" == "") then
+#	echo "no testbench file inside $TEST_PATH"
+#	echo "sim_flist.f  has generated failed"
+#else
+#	ls -l $TEST_PATH/*.v|awk '{print($9)}' >> $SIM_FLIST
+#	echo "sim_flist.f  has generated successfully"
+#endif

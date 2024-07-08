@@ -1,0 +1,80 @@
+#!python3
+
+#-----------------------------------------------------------------------------
+# import lib
+#-----------------------------------------------------------------------------
+import pandas as pd
+
+#-----------------------------------------------------------------------------
+# variable define
+#-----------------------------------------------------------------------------
+global    clock
+global    exception
+global    constraint
+
+#-----------------------------------------------------------------------------
+# sheet read in
+#-----------------------------------------------------------------------------
+var_def = pd.read_excel(r'/sata/hdd/upload/hr_li/clock.xlsx',sheet_name = "var_def")
+per_def = pd.read_excel(r'/sata/hdd/upload/hr_li/clock.xlsx',sheet_name = "per_def")
+gen_clk = pd.read_excel(r'/sata/hdd/upload/hr_li/clock.xlsx',sheet_name = "gen_clk")
+crt_clk = pd.read_excel(r'/sata/hdd/upload/hr_li/clock.xlsx',sheet_name = "crt_clk")
+pad_loc = pd.read_excel(r'/sata/hdd/upload/hr_li/clock.xlsx',sheet_name = "io_loc" )
+
+#-----------------------------------------------------------------------------
+# file write out
+#-----------------------------------------------------------------------------
+clock      = open("fpga_clock_define.xdc",'w+')
+exception  = open("fpga_exception.xdc",'w+')
+constraint = open("fpga_constraint.xdc",'w+')
+location   = open("fpga_location.xdc",'w+')
+
+#-----------------------------------------------------------------------------
+# comment function
+#-----------------------------------------------------------------------------
+def  comment(com,data):
+	print("#"+"-"*79,file=data)
+	print('#  %s'%com,file=data)
+	print("#"+"-"*79,file=data)
+
+#-----------------------------------------------------------------------------
+# variable define
+#-----------------------------------------------------------------------------
+def  variable_define(excel,data):
+	name  = excel['name']
+	val   = excel['value']
+	com   = 'variable define'
+	comment(com,data)
+	for i in name.index:
+		print('set  %-12s %-60s'%(name[i],val[i]),file=data)
+	print("",file=data)
+
+#-----------------------------------------------------------------------------
+# clock period define
+#-----------------------------------------------------------------------------
+
+
+
+#-----------------------------------------------------------------------------
+# create clock
+#-----------------------------------------------------------------------------
+
+
+
+#-----------------------------------------------------------------------------
+# create io port location
+#-----------------------------------------------------------------------------
+def  iop_loc(excel,data):
+	port  = excel['design_port']
+	pin   = excel['fpga_pin']
+	for i in port.index:
+		print('set_property PACKAGE_PIN %-8s [get_ports %11s]'%(pin[i],port[i]),file=data)
+		print('set_property IOSTANDARD LVCMOS18  [get_ports %11s]'%(port[i]),file=data)
+
+#-----------------------------------------------------------------------------
+# main input
+#-----------------------------------------------------------------------------
+if __name__=='__main__':
+	variable_define(var_def,clock)
+	iop_loc(pad_loc,location)
+

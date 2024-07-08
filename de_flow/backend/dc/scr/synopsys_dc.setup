@@ -1,0 +1,58 @@
+
+#   --================================CSMT CO. LTD.=============================--
+#   Information contained in this Confidential and Proprietary work has been
+#                            obtained by CSMT CO LTD 
+#   This Software may be used only as authorized by a licensing agreement from
+#                                  CSMT Limited
+#
+#                   COPYRIGHT (C) 2010-2018 CSMT DESIGN Limited
+#                              ALL RIGHTS RESERVED
+#
+#   The entire notice above must be displayed on all authorized CSMT copies.
+#       Copies may be made only to the extended consent by a licensing
+#                          agreement from CSMT Limited.
+#
+#   ------------------------------------------------------------------------------
+#   Project and Control Information
+#   ------------------------------------------------------------------------------
+#   File Name    : synopsys_dc.setup
+#   Version      : 0.1
+#   Date         : 2018/11/22
+#   Author       : Peter
+#   Features     : The lib path for Synthesis, need modfiy according to process
+#   Changes      : 
+#   ------------------------------------------------------------------------------
+
+#need modfiy this file according to process
+
+set designer "hr_li"
+set company "CSMT"
+
+
+#library base path
+set base_path /fhome/icdata/pl_liu/UMC/library/UMC55LP
+
+
+#library search path
+set search_path [concat $search_path  [list . /shome/software/synopsys/syn2016/syn_vL-2016.03-SP1/libraries/syn \
+    $base_path/UM055LSCEE12BPR-LIBRARY_TAPE_OUT_KIT-Ver.B02_PB/tapeout_kit/synopsys \
+    $base_path/UM055LSCEE12BPL-LIBRARY_TAPE_OUT_KIT-Ver.B02_PB/tapeout_kit/synopsys \
+    $base_path/UM055LSCEE12BBR-LIBRARY_TAPE_OUT_KIT-Ver.B02_PB/tapeout_kit/synopsys \
+    $base_path/UM055LSCEE12BBL-LIBRARY_TAPE_OUT_KIT-Ver.B02_PB/tapeout_kit/synopsys \
+	/software/synopsys/syn2016/syn_vL-2016.03-SP1/libraries/syn \
+	/fhome/icdata/hr_li/Music/M0_test/design/include \
+	]]
+
+#set search_path [concat $search_path  [list . /shome/software/synopsys/syn2016/syn_vL-2016.03-SP1/libraries/syn \
+#	/fhome/icdata/hr_li/Music/M0_test/design/include \
+#	]]
+
+set synthetic_library [list standard.sldb dw_foundation.sldb]
+
+
+#link_library
+set link_library [concat [list "*" ] $synthetic_library gtech.db]
+
+#target_library
+set target_library [list u055lscee12bpl_108c125_wc.db]
+

@@ -1,0 +1,272 @@
+#!/bin/csh -f
+#---------------------------------------------------------------
+#author   : hr_li
+#data     : 2020/3/1
+#function : run design tool
+#---------------------------------------------------------------
+
+#---------------------------------------------------------------
+# script function help
+#---------------------------------------------------------------
+if(($1  ==  "help")|($1  ==  ""))then
+	echo  "command introduction:"
+    echo  "-------------------------------------------------------------- "
+    echo  "      command               function                          |"
+	  echo  "./run emacsg  cmsdk.v   --> emacs build cmsdk.v               |"
+	  echo  "./run emacsk  cmsdk.v   --> emacs kill  cmsdk.v               |"
+	  echo  "./run rtlgen  cmsdk     --> generate cmsdk.v in genfile       |"
+	  echo  "./run rtltop  cmsdk_mcu --> set rtl top module                |"
+	  echo  "./run nettop  cmsdk_mcu --> set net top module                |"
+    echo  "./run flist             --> generate flist.f                  |"
+    echo  "./run nlint             --> run nlint                         |"
+    echo  "./run sg_lint           --> run spyglass lint                 |"
+    echo  "./run sg_cdc            --> run spyglass cdc                  |"
+    echo  "./run tb_gen  cmsdk_mcu --> generate cmsdk_mcu tb env         |"
+    echo  "./run tb_vcs  cmsdk_mcu --> run cmsdk_mcu tb env              |"
+    echo  "./run tb_del  cmsdk_mcu --> delete cmsdk_mcu tb env           |"
+    echo  "./run vivado            --> run fpga vivado tool              |"
+    echo  "./run st      hello     --> run st env hello program          |"
+	  echo  "./run debug             --> operate jtag and sw               |"
+    echo  "./run dc                --> run design compiler               |"
+    echo  "./run fm                --> run formality                     |"
+    echo  "-------------------------------------------------------------- "
+
+	  echo  "path introduction:"
+    echo  "-------------------------------------------------------------- "
+    echo  "      path                  function                          |"
+	  echo  "./design/define         --> contain macro define file         |"
+	  echo  "./design/emacs          --> contain emacs verilog mode        |"
+	  echo  "./design/filelist       --> contain fpga dc sim filelist      |"
+	  echo  "./design/genfile        --> contain generate file             |"
+    echo  "./design/include        --> contain include file              |"
+    echo  "./design/testbench      --> contain basic testbench file      |"
+    echo  "./design/verilog        --> contain all design verilog file   |"
+    echo  "./design/xilinx         --> contain fpga pll and ram file     |"
+    echo  "./check/nlint           --> path used to execute nlint        |"
+    echo  "./check/spyglass_lint   --> path used to execute sg lint      |"
+    echo  "./check/spyglass_cdc    --> path used to execute sg cdc       |"
+    echo  "./backend/dc            --> path used to execute dc           |"
+    echo  "./backend/fm            --> path used to execute fm           |"
+    echo  "./backend/pt            --> path used to execute pt           |"
+    echo  "-------------------------------------------------------------- "
+    exit 1
+endif
+
+#---------------------------------------------------------------
+# set current path
+#---------------------------------------------------------------
+set    RUN_DIR       =  `pwd`
+
+#---------------------------------------------------------------
+# user path define
+#---------------------------------------------------------------
+set    RTL_TOP_PATH  =  $RUN_DIR/design/define/top/rtl_top
+set    NET_TOP_PATH  =  $RUN_DIR/design/define/top/net_top
+set    RTL_GEN_PATH  =  $RUN_DIR/design/genfile
+set    BT_PATH       =  $RUN_DIR/verification/bt
+set    TB_PATH       =  $RUN_DIR/verification/tb
+set    ST_PATH       =  $RUN_DIR/verification/st
+set    FT_PATH       =  $RUN_DIR/verification/ft
+set	   DEBUG_PATH    =  $RUN_DIR/verification/debug
+
+#---------------------------------------------------------------
+# env parameter define
+#---------------------------------------------------------------
+setenv EMACS_PATH       $RUN_DIR/design/emacs
+
+#---------------------------------------------------------------
+# parameter define
+#---------------------------------------------------------------
+set    TOP_DEFINE =  0
+set    TB_DEFINE  =  0
+set    ST_DEFINE  =  0
+set    FT_DEFINE  =  0
+
+#---------------------------------------------------------------
+# run each item
+#---------------------------------------------------------------
+foreach i ($argv)
+
+#---------------------------------------------------------------
+# set rtl top & net top and do emacs deal
+#---------------------------------------------------------------
+	if($TOP_DEFINE == 1) then
+		cd $RTL_TOP_PATH;rm -rf *;touch $i;cd $RUN_DIR
+		set TOP_DEFINE = 0;continue
+	else if($TOP_DEFINE == 2) then
+		cd $NET_TOP_PATH;rm -rf *;touch $i;cd $RUN_DIR
+		set TOP_DEFINE = 0;continue
+	else if($TOP_DEFINE == 3) then
+		cd design;set EMACS_FILE = `find -name $i`
+		$EMACS_PATH/./emacsbatch $EMACS_FILE;cd $RUN_DIR
+		set TOP_DEFINE = 0;continue
+	else if($TOP_DEFINE == 4) then
+		cd design;set EMACS_FILE = `find -name $i`
+		$EMACS_PATH/./emacsbatchkill $EMACS_FILE;cd $RUN_DIR
+		set TOP_DEFINE = 0;continue
+	else if($TOP_DEFINE == 5) then
+		cd $RTL_GEN_PATH;./genfile $i;set TOP_DEFINE = 0
+        echo "$RTL_GEN_PATH/$i.v"
+		cd $RUN_DIR;continue
+	endif
+	
+	if($i == "rtltop") then
+		set TOP_DEFINE = 1;continue
+	else if($i == "nettop") then
+		set TOP_DEFINE = 2;continue
+	else if($i == "emacsg") then
+		set TOP_DEFINE = 3;continue
+	else if($i == "emacsk") then
+		set TOP_DEFINE = 4;continue
+	else if($i == "rtlgen") then
+		set TOP_DEFINE = 5;continue
+	endif
+
+#---------------------------------------------------------------
+# run filelist generate
+#---------------------------------------------------------------
+	if(($i == "flist")|($i == "all")) then
+		cd design/filelist
+		./gen_flist
+		cd $RUN_DIR
+	endif
+
+#---------------------------------------------------------------
+# run spyglass lint
+#---------------------------------------------------------------
+	if(($i == "sg_lint")|($i == "all")) then
+		cd check/spyglass_lint
+		./run_sg_lint_gui &
+		cd $RUN_DIR
+	endif
+
+#---------------------------------------------------------------
+# run spyglass cdc
+#---------------------------------------------------------------
+#	if(($i == "sg_cdc")|($i == "all")) then
+#		cd check/spyglass_cdc
+#		spyglass -tcl sg_cdc.tcl &
+#		cd ../../
+#	endif
+
+#---------------------------------------------------------------
+# generate tb env (need designer modify)
+#---------------------------------------------------------------
+	if($i == "tb_gen") then
+		set  TB_DEFINE = 1 ; continue
+	else if($TB_DEFINE == 1) then
+		cd $TB_PATH;
+		if(-d $i) then
+			echo "$i exists,now update the filelist" ;
+			rm $TB_PATH/$i/run/flist.f ;
+		else
+			mkdir $i;cp -rf temp/* $i;cd $i/testbench;set tb = `echo $i`_tb.v;
+			mv test.v $tb;
+			echo "`find ../../../../design -name $i.v`" >> $i.f ;
+			$EMACS_PATH/./rep_fix_prl $i.f \/$i.v \/ ;set filepth = `cat $i.f`;rm $i.f ;
+			$EMACS_PATH/./rep_fix_prl $tb testname $i filepth $filepth;$EMACS_PATH/./emacsbatch $tb ;
+			$EMACS_PATH/./tb_gen_prl $tb ;
+		endif
+		cd $TB_PATH/$i/run;
+		cat ../../../../design/filelist/sim_flist.f >> flist.f
+		ls ../testbench/*.v >> flist.f
+		cd $RUN_DIR
+	endif
+
+#---------------------------------------------------------------
+# run tb vcs
+#---------------------------------------------------------------
+	if($i == "tb_vcs") then
+		set  TB_DEFINE = 2 ; continue
+	else if($TB_DEFINE == 2) then
+		cd $TB_PATH/$i/run;
+		make all & ;
+		cd $RUN_DIR
+	endif
+
+#---------------------------------------------------------------
+# delete tb env
+#---------------------------------------------------------------
+	if($i == "tb_del") then
+		set  TB_DEFINE = 3 ; continue
+	else if($TB_DEFINE == 3) then
+		cd $TB_PATH;
+		if(-d $i) then
+			rm -rf $i ;
+		else
+			echo "file $i doesn't exist!"
+		endif
+		cd $RUN_DIR;
+	endif
+#---------------------------------------------------------------
+# st
+#---------------------------------------------------------------
+	if($i == "st") then
+		set ST_DEFINE = 1 ; continue
+	else if($ST_DEFINE == 1) then
+		cd $ST_PATH/env/run;make sim_vcs TESTNAME=$i &;
+		cd $RUN_DIR;
+	endif
+
+#---------------------------------------------------------------
+# st
+#---------------------------------------------------------------
+	if($i == "debug") then
+		cd $DEBUG_PATH/run;make sim_vcs ;cd $RUN_DIR;
+	endif
+
+#---------------------------------------------------------------
+# ft
+#---------------------------------------------------------------
+	if($i == "ft") then
+		set FT_DEFINE = 1 ; continue
+	else if($FT_DEFINE == 1) then
+		cd $FT_PATH/env/run;./clear;make sim_vcs TESTNAME=$i &;
+		cd $RUN_DIR;
+	endif
+
+#---------------------------------------------------------------
+# vivado
+#---------------------------------------------------------------
+	if($i == "vivado") then
+		cd $FT_PATH/vivado/run;./run_vivado ;
+		cd $RUN_DIR;
+	endif
+
+#---------------------------------------------------------------
+# run dc
+#---------------------------------------------------------------
+	if(($i == "dc")|($i == "all")) then
+		cd backend/dc/run
+		./run_dc
+		cd $RUN_DIR;
+	endif
+
+#---------------------------------------------------------------
+# run fm
+#---------------------------------------------------------------
+	if(($i == "fm")|($i == "all")) then
+		cd backend/fm/run
+		./run_fm
+		cd $RUN_DIR
+	endif
+
+#---------------------------------------------------------------
+# run pt
+#---------------------------------------------------------------
+
+
+
+
+
+
+#---------------------------------------------------------------
+# run icc
+#---------------------------------------------------------------
+
+
+
+
+
+end
+

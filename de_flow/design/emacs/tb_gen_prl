@@ -1,0 +1,88 @@
+#! /usr/bin/perl
+
+my $in   	=  @ARGV[0]  ;
+my $out  	=  @ARGV[0]  ;
+my $out  	=~ s/\A/md_/ ;
+my $ins  	=  ""        ;
+my $fil  	=  0         ;
+my @inp  	=  ()        ;
+my @clk  	=  ()        ;
+my @rst  	=  ()        ;
+my $clk_num =  0		 ;
+my $rst_num =  0		 ;
+
+open $in_fh,  '<', $in     ;
+open $out_fh, '>', $out    ;
+
+while (<$in_fh>) {
+	if (/\A(input).*(\t+)(\w+);/) {
+		push @inp,$3 ;
+		$ins =  $ins."\t\t$3 = 0 ;\n" ;
+		my $temp = $3;
+		if($3 =~ /.*ck.*|.*clock.*|.*clk.*|.*CK.*|.*XTAL1.*/) {
+			push @clk,$temp ;
+		} elsif ($3 =~ /.*rst.*|.*reset.*|.*RST.*/) {
+			push @rst,$temp ;
+		}
+		s/input/reg/g  ;
+	}
+
+	s/output/wire/g if (/\Aoutput/);
+	s/inout/wire/g  if (/\Ainout/);
+
+	if(/clk1_define/) {
+		if(@clk>0) {s/clk1_define/@clk[0]/g ;}
+		else{$fil = 1;}
+	}
+	if(/clk2_define/) {
+		if(@clk>1) {s/clk2_define/@clk[1]/g ;}
+		else{$fil = 1;}		
+	}
+	if(/clk3_define/) {
+		if(@clk>2) {s/clk3_define/@clk[2]/g ;}
+		else{$fil = 1;}		
+	}
+	if(/rst1_define/) {
+		if(@rst>0) {s/rst1_define/@rst[0]/g ;
+		}else{$fil = 1;}		
+	}
+	if(/rst2_define/) {
+		if(@rst>1) {s/rst2_define/@rst[1]/g ;
+		}else{$fil = 1;}		
+	}
+	if(/rst3_define/) {
+		if(@rst>2) {s/rst3_define/@rst[2]/g ;
+		}else{$fil = 1;}		
+	}
+	if(/input_define/) {
+		s/input_define/$ins/g
+	}
+	if($fil == 0){
+		print $out_fh $_ ;
+	} else{
+		$fil = 0 ;
+	}
+		
+}
+
+
+if(@clk>0){
+	if(@clk == 1) {print "There is only one clock inside design\n";$clk_num = 1;}
+	elsif(@clk == 2){print "There is two clock inside design\n";$clk_num = 2;}
+	elsif(@clk == 3){print "There is three clock inside design\n";$clk_num = 3;}
+	else{print "There is four or more clock inside design\n";$clk_num = 3;}
+}else {print "There is no clock inside design";}
+
+if(@rst>0){
+	if(@rst == 1) {print "There is only one reset inside design\n";$rst_num = 1;}
+	elsif(@rst == 2){print "There is two reset inside design\n";$rst_num = 2;}
+	elsif(@rst == 3){print "There is three reset inside design\n";$rst_num = 3;}
+	else{print "There is four or more reset inside design\n";$rst_num = 3;}
+}else {print "There is no reset inside design\n";}
+
+close $in_fh    ;
+close $out_fh   ;
+
+unlink $in      ;
+rename $out,$in ;
+

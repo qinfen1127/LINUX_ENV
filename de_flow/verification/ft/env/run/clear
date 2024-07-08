@@ -1,0 +1,38 @@
+#!/bin/csh -f
+
+
+if ( -f ./novas.rc) then
+	rm -rf novas*
+endif
+
+if ( -f simv) then
+	rm -rf sim*
+endif
+
+if ( -f ucli.key) then
+	rm -rf *.key
+endif
+
+if ( -f test.fsdb) then
+	rm -rf test.*
+endif
+
+if ( -f novas_dump.log) then
+	rm -rf novas*
+endif
+
+if ( -f vcs.log) then
+	rm -rf *.log
+endif
+
+if ( -d VerdiLog) then
+	rm -rf VerdiLog
+endif
+
+if ( -d novas_libs) then
+	rm -rf novas_libs
+endif
+
+if ( -d csrc) then
+	rm -rf csrc
+endif

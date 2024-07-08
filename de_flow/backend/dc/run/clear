@@ -1,0 +1,16 @@
+#!/bin/csh -f
+
+if ( -f ./command.log) then
+	rm -rf ./command.log
+endif
+if ( -f ./default.svf) then
+	rm -rf ./default.svf
+endif
+if ( -d ./alib-52) then
+	rm -rf ./alib-52
+endif
+if ( -d ./work) then
+	rm -rf ./work
+endif
+
+

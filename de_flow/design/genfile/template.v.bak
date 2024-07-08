@@ -1,0 +1,194 @@
+//======================================================================
+// Copyright(c) 2024, Fighting for freedom & Always going on
+//                         All Right Reserved
+//
+// Created by     : u_author
+// Filename       : u_name.v
+// Created On     : u_date
+// Last Modified  : u_date
+//
+// Description: 
+//
+// Version        Modified by        Date           Description
+// 1              u_author          u_date     original
+//
+//======================================================================
+
+module u_name (/*autoarg*/);
+
+//--------------------------------------------------------------------------------------------
+//  parameter define
+//--------------------------------------------------------------------------------------------
+parameter					xxxx		=	3'b001		;
+localparam					xxxx        =	3'b000		;
+
+/*autoinput*/
+
+/*autooutput*/
+
+/*autoinout*/
+
+/*autowire*/
+
+/*autoreg*/
+
+//--------------------------------------------------------------------------------------------
+//  input & output
+//--------------------------------------------------------------------------------------------
+input  wire	[32:0]			clk							;
+input  reg					rstn						;
+
+//--------------------------------------------------------------------------------------------
+//  wire define
+//--------------------------------------------------------------------------------------------
+wire		[xx:x]			xxx							;
+
+//--------------------------------------------------------------------------------------------
+//  reg define
+//--------------------------------------------------------------------------------------------
+reg			[31:0]			xxx							;
+
+//--------------------------------------------------------------------------------------------
+//  instance
+//--------------------------------------------------------------------------------------------
+/*testname auto_template "u_\([a-z]+[0-9]+\)" (
+	.\(.*\)						(\1[]),
+);*/
+testname  u_testname (/*autoinst*/);
+
+
+
+
+
+
+/*
+//--------------------------------------------------------------------------------------------
+//  sequential logic
+//--------------------------------------------------------------------------------------------
+always@(posedge clk or negedge rstn) begin
+	if(!rstn) begin
+		xxx <= 1'b0 ;
+	end else if(xxx) begin
+		xxx <= 1'b1 ;
+	end	
+end
+
+always@(posedge clk or negedge rstn) begin
+	if(!rstn) begin
+		xxx <= 1'b0 ;
+	end else if(xxx) begin
+		xxx <= 1'b1 ;
+	end	
+end
+
+always@(posedge clk or negedge rstn) begin
+	if(!rstn) begin
+		prdata <= 32'b0 ;
+	end else if(rd_en) begin
+		case(1)
+			sel_cr1 : prdata_r <= 32'd1 ;
+			sel_cr2 : prdata_r <= 32'd2 ;
+			default : prdata_r <= 32'd0 ;
+		endcase
+	end	
+end
+
+//--------------------------------------------------------------------------------------------
+//  combinational logic
+//--------------------------------------------------------------------------------------------
+always@(*) begin
+	if(xxx) begin
+		xxx <= 1'b0 ;
+	end else if(xxx) begin
+		xxx <= 1'b0 ;
+	end else begin
+		xxx <= 1'b0 ;
+	end
+end
+
+always@(*) begin
+	case(tsel)
+		3'b000  :  sel_r = tim6_trgo  ;
+		3'b001  :  sel_r = tim7_trgo  ;
+		default :  sel_r = 1'b0       ;
+	endcase
+end
+
+assign  {mamp,wave,tsel,ten} = cr_dac_value ;
+
+assign  shift_en = dac_cnt ? all_trigr : 1'b0 ;
+
+assign  sel_cr   = (ipaddr==ADD_CR) ? 1'b1 : 1'b0 ;
+
+assign  dac_dor1 = {20'b0,dor1_value};
+
+//--------------------------------------------------------------------------------------------
+//  generate sytax
+//--------------------------------------------------------------------------------------------
+generate if(SYNC==0) begin : SYNC_0
+	assign  a = b & c ;
+end else if(SYNC==1) begin : SYNC_1
+	assign  a = b & t ;
+end else begin : SYNC_3
+	assign  a = c & d ;
+end
+endgenerate
+
+genvar j;
+generate
+	for(j = 0 ; j < 32 ; j = j + 1) begin : FOR_LOOP
+		always@(posedge clk or negedge rstn) begin
+			if(!rstn) begin
+				sw[j] <= 1'b0 ;
+			end else if(wt) begin
+				sw[j] <= 1'b1 ;
+			end	
+		end
+	end
+endgenerate
+*/
+
+//--------------------------------------------------------------------------------------------
+//  macro definition
+//--------------------------------------------------------------------------------------------
+//`ifdef HWD32F7_FPGA_BLACK_BOX
+//	)/* synthesis syn_black_box */;
+//`else
+//	);
+//`endif
+
+//--------------------------------------------------------------------------------------------
+//  parameter define
+//--------------------------------------------------------------------------------------------
+/*
+module test #(parameter SYNC = 3'b001,TIM_NUM = 3'b010) (
+	.......
+);
+endmodule
+
+module test (
+parameter SYNC = 3'b001,TIM_NUM = 3'b010 ;
+	.......
+);
+
+endmodule
+
+test #(.SYNC(3'b001),.TIM_NUM(TIM_NUM))
+u_test (
+	.input1		(input1) ,
+	.input2     (input2) ,
+
+	.output1	(output1),
+	.output2	(output2)
+);
+
+*/
+endmodule
+
+// Local Variables:
+// verilog-library-directories:("filepath")
+// verilog-auto-inst-param-value:t
+// verilog-auto-output-ignore-regexp:"^.*_nc.*\\|^.*pst.*"
+// verilog-auto-input-ignore-regexp:"^.*nc.*\\|^.*pst.*"
+// End:
+

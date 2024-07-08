@@ -1,0 +1,1 @@
+emacs --batch --no-site-file -l ~/.vim/verilog-mode.el $1 -f verilog-batch-delete-auto -f save-buffer
