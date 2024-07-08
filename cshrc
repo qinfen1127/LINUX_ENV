@@ -64,7 +64,7 @@ alias     rt        "su root"
 if (! $?my_name) then
   setenv    my_name `whoami`       
 endif
-alias     sm        'su $my_name'
+alias     sm        "su $my_name"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  git command
@@ -99,7 +99,8 @@ alias     pfile     "python3 ~/script/file_line.py"
 alias     pflist    "python3 ~/script/flist_line.py"
 alias     port      "python3 ~/script/port_shell.py"
 alias     cps       "~/script/./compress"
-alias     pskill    "ps -eLf | grep haoran | grep simv | awk '{print $2}' | xargs -r kill -9"
+alias     pskill    "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"
+alias     psm       "ps -eLf | grep $my_name"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  source complete
