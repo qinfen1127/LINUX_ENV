@@ -8,16 +8,13 @@
 #===========================================================================================================================
 
 #----------------------------------------------------------------------------------------------------------------------
-#  set compress and uncompress
+#  tools source
 #----------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
+#source  /lsf/conf/cshrc.lsf
+#module  load    python/3.8.2
+#module  unload  python/3.8.2
+#module  av  
+#module  list
 
 #----------------------------------------------------------------------------------------------------------------------
 #  set compress and uncompress
@@ -81,6 +78,21 @@ alias     gpl       "git pull"
 alias     gcl       "git clone"
 
 #----------------------------------------------------------------------------------------------------------------------
+#  p4 command
+#----------------------------------------------------------------------------------------------------------------------
+alias     4op       "p4 open"
+alias     4pd       "p4 opened"
+alias     4sc       "p4 sync"
+alias     4ad       "p4 add"
+alias     4st       "p4 submit -d"
+alias     4if       "p4 info"
+alias     4xr       "source _env/init.csh"
+alias     4rt       "p4 revert"
+alias     4sm       "p4 stream revert"
+alias     4se       "p4 shelve -Af -f -c"
+alias     4us       "p4 unshelve -s"
+
+#----------------------------------------------------------------------------------------------------------------------
 #  lsf command set
 #----------------------------------------------------------------------------------------------------------------------
 alias     bsubn     "bsub"
@@ -96,8 +108,8 @@ alias     bsubg     "bsub -Ip"
 #  local script set
 #----------------------------------------------------------------------------------------------------------------------
 alias     plist     "python3 ~/script/plist.py"
-alias     pfile     "python3 ~/script/file_line.py"
-alias     pflist    "python3 ~/script/flist_line.py"
+alias     vline     "python3 ~/script/file_line.py"
+alias     fline     "python3 ~/script/flist_line.py"
 alias     port      "python3 ~/script/port_shell.py"
 alias     cps       "~/script/./compress"
 alias     pskill    "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"

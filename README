@@ -2,6 +2,9 @@ cshrc    : ~/.cshrc
 vimrc    : ~/.vimrc
 vim      : ~/.vim
 script   : ~/script
+de_flow  : ~/de_flow
 cmd      : used to replace env file
 
 source cmd
+cd ~/de_flow
+./run

@@ -7,3 +7,4 @@ cp  vimrc         ~/.vimrc
 cp  vim           ~/.vim  -rf
 mkdir -p          ~/script
 cp  script/*      ~/script/ -rf
+cp  de_flow       ~/        -rf
