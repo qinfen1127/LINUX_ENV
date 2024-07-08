@@ -184,7 +184,7 @@ map J     10jzz
 map H     10h
 map <C-h> 0
 map L     10l
-map <C-l> A<Esc>
+map <C-l> $
 map <C-j> 5jzz
 map K     10kzz
 map <C-k> 5kzz

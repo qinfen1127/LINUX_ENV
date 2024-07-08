@@ -86,6 +86,11 @@ alias     gps       "git push origin main"
 alias     gbh       "git branch"
 alias     gpl       "git pull"
 alias     gcl       "git clone"
+alias     gco       "git checkout"         #before git add    |     .-discard all  |      xxx-only discard xxx
+alias     grt       "git reset HEAD"       #before git commit |      -discard all  |      xxx-only discard xxx
+alias     grh       "git reset --hard"     #after  git commit | HEAD^-back forward | commitid-back forward to commitid
+alias     gbk       "git reset --hard HEAD^"
+alias     glg       "git log"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  p4 command
