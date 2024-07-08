@@ -1,5 +1,5 @@
 //==========================================================================================================================
-//  @File Name  :  /home/haoran/.vim/temp/verilog_temp.v
+//  @File Name  :  m_verilog.v
 //  @File Type  :  verilog
 //  @Author     :  Howard
 //  @E-mail     :  qinfen1127@163.com
@@ -7,8 +7,8 @@
 //  @Function   :  
 //==========================================================================================================================
 
-module verilog_temp #(//parameter define
-  parameter ADDRWIDTH = 12
+module m_verilog #(
+  parameter ADDRWIDTH = 12                   //parameter define
 )(
   input  wire                    pclk      , // pclk
   input  wire                    presetn   , // reset
