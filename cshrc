@@ -27,6 +27,8 @@ alias     jy.tgz    "tar -xvf"  # jy.tgz    test.tgz
 alias     ys.tgz    "tar -czvf" # ys.tgz    test.gz test
 alias     jy.tar.gz "tar -xvf"  # jy.tar.gz test.tar.gz
 alias     ys.tar.gz "tar -czvf" # ys.tar.gz test.tar.gz test
+alias     jy.tar    "tar -xvf"  # jy.tar    test.tar
+alias     ys.tar    "tar -cvf"  # jy.tar    test.tar test1 test2
 
 #----------------------------------------------------------------------------------------------------------------------
 #  linux command set
@@ -46,6 +48,7 @@ alias     fd        "find -name"
 alias     cf        "cp -rf"
 alias     rf        "rm -rf"
 alias     cd        "cd \!*;ls"
+alias     mc        "mkdir \!*;cd \!*"
 alias     la        "ls -a"
 alias     lh        "ls -lh"
 alias     dx        "du -sh"
