@@ -136,7 +136,7 @@ alias     psm         "ps -eLf | grep $my_name"
 alias     yz_verdi    "bsubg verdi -ssv -ssx -ssy -ssz -ssf"
 alias     exec_verdi  "bsubg verdi -ssy -ssv -dbdir *.daidir &"
 alias     cq          "reboot"
-alias     gj          "shutdown"
+alias     gj          "poweroff"
 alias     pdf         "evince"
 
 #----------------------------------------------------------------------------------------------------------------------
