@@ -59,6 +59,7 @@ alias     sch       "source /etc/csh.cshrc"
 alias     fh        "cd -"
 alias     c         "clear"
 alias     h         "history"
+alias     py3       "python3"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  set prompt
@@ -132,6 +133,8 @@ alias     port      "python3 ~/script/port_shell.py"
 alias     cps       "~/script/./compress"
 alias     pskill    "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"
 alias     psm       "ps -eLf | grep $my_name"
+alias     yz_verdi  "bsubg verdi -ssv -ssx -ssy -ssz -ssf"
+alias     exec_verdi "bsubg verdi -ssy -ssv -dbdir *.daidir &"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  local script set
