@@ -126,15 +126,18 @@ alias     bsubg     "bsub -Ip"
 #----------------------------------------------------------------------------------------------------------------------
 #  local script set
 #----------------------------------------------------------------------------------------------------------------------
-alias     plist     "python3 ~/script/plist.py"
-alias     vline     "python3 ~/script/file_line.py"
-alias     fline     "python3 ~/script/flist_line.py"
-alias     port      "python3 ~/script/port_shell.py"
-alias     cps       "~/script/./compress"
-alias     pskill    "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"
-alias     psm       "ps -eLf | grep $my_name"
-alias     yz_verdi  "bsubg verdi -ssv -ssx -ssy -ssz -ssf"
-alias     exec_verdi "bsubg verdi -ssy -ssv -dbdir *.daidir &"
+alias     plist       "python3 ~/script/plist.py"
+alias     vline       "python3 ~/script/file_line.py"
+alias     fline       "python3 ~/script/flist_line.py"
+alias     port        "python3 ~/script/port_shell.py"
+alias     cps         "~/script/./compress"
+alias     pskill      "ps -eLf | grep $my_name | grep simv | awk '{print $2}' | xargs -r kill -9"
+alias     psm         "ps -eLf | grep $my_name"
+alias     yz_verdi    "bsubg verdi -ssv -ssx -ssy -ssz -ssf"
+alias     exec_verdi  "bsubg verdi -ssy -ssv -dbdir *.daidir &"
+alias     cq          "reboot"
+alias     gj          "shutdown"
+alias     pdf         "evince"
 
 #----------------------------------------------------------------------------------------------------------------------
 #  local script set
