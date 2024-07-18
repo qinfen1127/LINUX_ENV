@@ -56,6 +56,7 @@ map <F2> :call BT2() <cr>dd6ji<end>
 map <F3> :call BT3() <cr>dd6ji<end>
 
 map mv :vsp<cr>:gvim ~/.vim/temp/m_verilog.v<cr><C-w>w
+map mt :vsp<cr>:gvim ~/.vim/temp/tb.v<cr><C-w>w
 
 
 func BT1() 
