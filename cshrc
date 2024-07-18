@@ -138,7 +138,7 @@ alias     exec_verdi  "bsubg verdi -ssy -ssv -dbdir *.daidir &"
 alias     cq          "reboot"
 alias     gj          "poweroff"
 alias     pdf         "evince"
-alias     pdf_hb      "gs -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=output.pdf"    #pdf_hb xsdf.pdf x4.pdf
+alias     pdf_hb      "gs -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=output.pdf"    #pdf_hb xsdf.pdf x4.pdf | pdfunite x1.pdf x2.pdf output.pdf
 
 #----------------------------------------------------------------------------------------------------------------------
 #  local script set
