@@ -11,9 +11,13 @@
 // 1  module_start format
 //---------------------------------------------------------------------------------------------------------------------
 module m_verilog #(
-  parameter   ADDRWIDTH = 12                 //parameter define
- ,parameter   DATAWIDTH = 12                 //parameter define
- ,localparam  SELFWIDTH = 12                 //parameter define
+  parameter   ADDRWIDTH    = 12                         , // parameter define
+  parameter   DATAWIDTH    = 12                         , // parameter define
+  localparam  SELFWIDTH    = 12                         , // parameter define
+  parameter   p_data_width = 32'd32                     , // parameter define
+  parameter   p_num_par    = (p_data_width+32'd7)/32'd8 , // parameter define
+  parameter   p_int_width  = p_num_par*32'd8            , // parameter define
+  parameter   p_fault_inj  = 1'b1                         // parameter define
 )(
   input  wire                    pclk      , // pclk
   input  wire                    presetn   , // reset
@@ -29,6 +33,8 @@ module m_verilog #(
   output reg                     pready    , // apb4 slave ready
   output reg                     pslverr     // apb4 slave error occurr
 );
+
+endmodule
 
 //---------------------------------------------------------------------------------------------------------------------
 // 2  parameter & localparam define
@@ -93,7 +99,19 @@ module m_verilog #(
     end
 
 //---------------------------------------------------------------------------------------------------------------------
-// 7  generate logic
+// 7  combine logic
+//---------------------------------------------------------------------------------------------------------------------
+  assign  expencted_lane_no_reversed_int = 
+            ( tx_lane_no_active_count_reg == 3'b100) ? 9'd5 : // commant1
+            ( tx_lane_no_active_count_reg == 3'b101) ? 9'd4 : // comment2
+            ( tx_lane_no_active_count_reg == 3'b110) ? 9'd3 : // comment3
+            ( tx_lane_no_active_count_reg == 3'b111) ? 9'd2 : // comment4
+            ( tx_lane_no_active_count_reg == 3'b001) ? 9'd1 : // comment5
+                                                       9'd0 ; // comment6
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// 8  generate logic1
 //---------------------------------------------------------------------------------------------------------------------
   generate 
     if (p_data_width < p_int_width)
@@ -106,5 +124,54 @@ module m_verilog #(
       end
   endgenerate
 
-endmodule
+//---------------------------------------------------------------------------------------------------------------------
+// 9  generate logic2
+//---------------------------------------------------------------------------------------------------------------------
+  genvar  n;
+  generate
+    for (n=0; n < p_num_par ; n=n+1)
+      begin
+        assign parity_even[n] = (^data_padded[n*8+7:n*8]);
+      end
+  endgenerate
+
+//---------------------------------------------------------------------------------------------------------------------
+// 10 ifdef condition
+//---------------------------------------------------------------------------------------------------------------------
+`ifdef DBCXL__FPGA_MODE
+  localparam FC_IDLE = 4'b0000;
+`else
+  localparam FC_IDLE = 4'b0001;
+`endif
+
+//---------------------------------------------------------------------------------------------------------------------
+// 11 ifndef condition
+//---------------------------------------------------------------------------------------------------------------------
+`ifndef DBCXL__FPGA_MODE
+  localparam FC_IDLE = 4'b0000;
+`else
+  localparam FC_IDLE = 4'b0001;
+`endif
+
+//---------------------------------------------------------------------------------------------------------------------
+// 12 module example
+//---------------------------------------------------------------------------------------------------------------------
+  dbCXL__hls_flr_status_ctrl #(
+    .KMAX_NUM_PFS ( 12 ) ,
+    .KMAX_NUM_VFS ( 13 ) ,
+    .KMUX_NUM_ALL ( 14 ) 
+  )
+  flr_status_ctrl (
+    .pclk                 ( PCLK            ) , 
+    .presetn              ( PRESETn         ) , 
+
+    // Register interface
+    .addr                 ( reg_addr        ) , 
+    .read_en              ( reg_read_en     ) , 
+    .write_en             ( reg_write_en    ) , 
+    .byte_strobe          ( reg_byte_strobe ) , 
+    .wdata                ( reg_wdata       ) , 
+    .ecorevnum            ( ECOREVNUM       ) , 
+    .rdata                ( reg_rdata       )
+  );
 
