@@ -11,13 +11,15 @@
 // 1  module_start format
 //---------------------------------------------------------------------------------------------------------------------
 module m_verilog #(
-  parameter   ADDRWIDTH    = 12                         , // parameter define
-  parameter   DATAWIDTH    = 12                         , // parameter define
-  localparam  SELFWIDTH    = 12                         , // parameter define
-  parameter   p_data_width = 32'd32                     , // parameter define
-  parameter   p_num_par    = (p_data_width+32'd7)/32'd8 , // parameter define
-  parameter   p_int_width  = p_num_par*32'd8            , // parameter define
-  parameter   p_fault_inj  = 1'b1                         // parameter define
+  parameter   ADDRWIDTH    = 12                                                            , // parameter define
+  parameter   DATAWIDTH    = 12                                                            , // parameter define
+  localparam  SELFWIDTH    = 12                                                            , // parameter define
+  parameter   p_data_width = 32'd32                                                        , // parameter define
+  parameter   p_num_par    = (p_data_width+32'd7)/32'd8                                    , // parameter define
+  parameter   p_int_width  = p_num_par*32'd8                                               , // parameter define
+  parameter   p_fault_inj  = 1'b1                                                          , // parameter define
+  parameter   M_IF_COUNT   = 3                                                             , // parameter define
+  localparam  M_IF_WIDTH   = (M_IF_COUNT < 2) ? 1 : $clog2(M_IF_COUNT)                       // parameter define
 )(
   input  wire                    pclk      , // pclk
   input  wire                    presetn   , // reset
@@ -72,13 +74,11 @@ endmodule
 //---------------------------------------------------------------------------------------------------------------------
 // 5  assign logic2
 //---------------------------------------------------------------------------------------------------------------------
-  assign  expencted_lane_no_reversed_int = 
-            ( tx_lane_no_active_count_reg == 3'b100) ? 9'd5 : // comment1
-            ( tx_lane_no_active_count_reg == 3'b101) ? 9'd4 : // comment2
-            ( tx_lane_no_active_count_reg == 3'b110) ? 9'd3 : // comment3
-            ( tx_lane_no_active_count_reg == 3'b111) ? 9'd2 : // comment4
-            ( tx_lane_no_active_count_reg == 3'b001) ? 9'd1 : // comment5
-                                                       9'd0 ; // comment6
+  assign  expencted_lane_no_reversed_int = ( tx_lane_no_active_count_reg == 3'b100) ? 9'd5 :        // comment1
+                                           ( tx_lane_no_active_count_reg == 3'b101) ? 9'd4 :        // comment2
+                                           ( tx_lane_no_active_count_reg == 3'b110) ? 9'd3 :        // comment3
+                                           ( tx_lane_no_active_count_reg == 3'b111) ? 9'd2 :        // comment4
+                                           ( tx_lane_no_active_count_reg == 3'b001) ? 9'd1 : 9'd0 ; // comment6
 
 //---------------------------------------------------------------------------------------------------------------------
 // 6  assign logic3
@@ -102,6 +102,9 @@ endmodule
             l00_pipe_rx_status_core_clk,
                          };
 
+//---------------------------------------------------------------------------------------------------------------------
+// 6  assign logic4
+//---------------------------------------------------------------------------------------------------------------------
   assign  pipe_rx_status_core_clk = {
             l00_pipe_rx_status_core_clk,
             l01_pipe_rx_status_core_clk,
@@ -122,7 +125,7 @@ endmodule
                          };
 
 //---------------------------------------------------------------------------------------------------------------------
-// 6  assign logic4
+// 6  assign logic5
 //---------------------------------------------------------------------------------------------------------------------
   wire  [31:0]  data_file  [0:63] ;
 
@@ -190,6 +193,26 @@ endmodule
   assign data_file[61]    = 32'h0000_0000;
   assign data_file[62]    = 32'h0000_0000;
   assign data_file[63]    = 32'h0000_0000;
+
+//---------------------------------------------------------------------------------------------------------------------
+// 6  assign logic6
+//---------------------------------------------------------------------------------------------------------------------
+  assign tx_link12_wr_en =    (tx_l00_afifo_wr_en && lane2link_cfg[(  0*4) +:4] ==4'd12)        // 3:0
+                           || (tx_l01_afifo_wr_en && lane2link_cfg[(  1*4) +:4] ==4'd12)        // 7:4
+                           || (tx_l02_afifo_wr_en && lane2link_cfg[(  2*4) +:4] ==4'd12)        //11:8
+                           || (tx_l03_afifo_wr_en && lane2link_cfg[(  3*4) +:4] ==4'd12)        //15:12
+                           || (tx_l04_afifo_wr_en && lane2link_cfg[(  4*4) +:4] ==4'd12)        //19:16
+                           || (tx_l05_afifo_wr_en && lane2link_cfg[(  5*4) +:4] ==4'd12)        //23:20
+                           || (tx_l06_afifo_wr_en && lane2link_cfg[(  6*4) +:4] ==4'd12)        //27:24
+                           || (tx_l07_afifo_wr_en && lane2link_cfg[(  7*4) +:4] ==4'd12)        //31:28
+                           || (tx_l08_afifo_wr_en && lane2link_cfg[(  8*4) +:4] ==4'd12)        //35:32
+                           || (tx_l09_afifo_wr_en && lane2link_cfg[(  9*4) +:4] ==4'd12)        //39:36
+                           || (tx_l10_afifo_wr_en && lane2link_cfg[( 10*4) +:4] ==4'd12)        //43:40
+                           || (tx_l11_afifo_wr_en && lane2link_cfg[( 11*4) +:4] ==4'd12)        //47:44
+                           || (tx_l12_afifo_wr_en && lane2link_cfg[( 12*4) +:4] ==4'd12)        //51:48
+                           || (tx_l13_afifo_wr_en && lane2link_cfg[( 13*4) +:4] ==4'd12)        //55:52
+                           || (tx_l14_afifo_wr_en && lane2link_cfg[( 14*4) +:4] ==4'd12)        //59:56
+                           || (tx_l15_afifo_wr_en && lane2link_cfg[( 15*4) +:4] ==4'd12);       //63:60
 
 //---------------------------------------------------------------------------------------------------------------------
 // 6  always combine logic1
