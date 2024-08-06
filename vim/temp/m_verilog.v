@@ -323,6 +323,28 @@ endmodule
     end
 
 //---------------------------------------------------------------------------------------------------------------------
+// 7  always combine logic6
+//---------------------------------------------------------------------------------------------------------------------
+  parameter  KMAX_NUM_TLPS_PER_CLK = 8;
+  integer i0,i1,i2,i3;
+  reg [31:0] received_crc[0:KMAX_NUM_TLPS_PER_CLK-1];
+  always @(*)
+    begin
+      for (i0=0; i0<KMAX_NUM_TLPS_PER_CLK; i0=i0+1)
+        received_crc[i0] = {32{1'd0}};
+
+      for (i1=0; i1<KMAX_NUM_TLPS_PER_CLK; i1=i1+1)
+        begin
+          for (i2=0; i2<32; i2=i2+1)
+            if (in_end_ptr[i1] == i2)
+              begin
+                for (i3=0; i3<32; i3=i3+1)
+                  received_crc[i1][i3] = in_data_reg2[i2*32 + i3];
+              end
+        end
+    end
+
+//---------------------------------------------------------------------------------------------------------------------
 // 7  always sequence logic1
 //---------------------------------------------------------------------------------------------------------------------
   always @(posedge pclk or negedge presetn)
