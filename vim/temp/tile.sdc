@@ -58,4 +58,17 @@ for {set pipe_index 1} {$pipe_index <16} {incr pipe_index} {
     [get_pins $hier_pciecore/u_phy/u_phy_clkrst/u_phy_port_datart_clk_mux_p_${pipe_index}/$fullrt_clock_mux_name/Z]
 }
 
+#----------------------------------------------------------------------------------------------------------------------
+#  8   set_false_path
+#----------------------------------------------------------------------------------------------------------------------
+set_false_path -from    [get_clocks {FULLRT_P?_PIPE_FULLRT_P??_PIPE}] -to [get_clocks {FULLRT_DIV_P?_PIPE_FULLRT_DIV_P??_PIPE}]
+set_false_path -through [get_pins {u_phy/u_mp_pma/tx_local_tx_coef_valid_ln_*}]
+set_false_path -from    [get_ports {rx_p_ln_*}]
+set_false_path -from    [get_ports {rx_m_ln_*}]
+set_false_path -to      [get_ports {tx_p_ln_*}]
+set_false_path -to      [get_ports {tx_m_ln_*}]
+
+for {set lane 0} {$lane < 16} {incr lane} {
+  set_false_path -from [get_clocks FULLRT_DIV_P${lane}_PIPE]  -thr [filter [all_register -data_pins -clock [get_clocks FULLRT_P${lane}_PIPE]] "full_name !~ ${hier_pciecore}/u_phy_u_pma_fullrt_div_p_*/u_fullrt_prog_clk_div/clock_div*reg*/*" ] -to [get_clocks FULLRT_P${lane}_PIPE]
+}
 
