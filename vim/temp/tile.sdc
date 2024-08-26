@@ -72,3 +72,8 @@ for {set lane 0} {$lane < 16} {incr lane} {
   set_false_path -from [get_clocks FULLRT_DIV_P${lane}_PIPE]  -thr [filter [all_register -data_pins -clock [get_clocks FULLRT_P${lane}_PIPE]] "full_name !~ ${hier_pciecore}/u_phy_u_pma_fullrt_div_p_*/u_fullrt_prog_clk_div/clock_div*reg*/*" ] -to [get_clocks FULLRT_P${lane}_PIPE]
 }
 
+#----------------------------------------------------------------------------------------------------------------------
+#  9   set_multicycle_path
+#----------------------------------------------------------------------------------------------------------------------
+set_multicycle_path 3 -setup -from [get_pins UFF0/Q] -to [get_pins UFF1/D]
+set_multicycle_path 2 -hold  -from [get_pins UFF0/Q] -to [get_pins UFF1/D]
